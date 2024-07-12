@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block style %}<link rel="stylesheet" href="{{ url_for('static', filename='add_product.css')}}">{% endblock style %}
+    <title>Домашняя страница</title>
+</head>
+<body>
+    {% block main %}
+    <a class="link" href="/list_of_given_products">Выдачи</a>
+    <div class="form-container">
+        {% if error %}
+        <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <h2>Форма выдачи товара</h2>
+        <form action="{{ url_for('add_product') }}", method="POST">
+            <div class="form-group">
+                <label for="productName">Наименование товара:</label>
+                <input type="text" id="productName" name="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="productColor">Цвет товара:</label>
+                <input type="text" id="productColor" name="productColor" required>
+            </div>
+            <div class="form-group">
+                <label for="productUnit">Единица измерения:</label>
+                <select id="productUnit" name="productUnit" required>
+                    <option value="" disabled selected>Выберите единицу измерения</option>
+                    <option value="кг.">кг.</option>
+                    <option value="м.">м.</option>
+                    <option value="шт.">шт.</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="productNote">Примечание</label>
+                <input type="text" name="productNote" id="productNote" placeholder="Не обязательно">
+            </div>
+            <div class="form-group">
+                <label for="productQuantity">Единица</label>
+                <input type="number" id="productQuantity" name="productQuantity" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Отправить">
+            </div>
+        </form>
+    </div>
+    {% endblock main %}
+</body>
+</html>

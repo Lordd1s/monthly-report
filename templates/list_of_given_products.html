@@ -1,0 +1,32 @@
+{% extends "add_product.html" %}
+
+{% block style%} <link rel="stylesheet" href="{{ url_for('static', filename='list_of_given_products.css') }}"> {% endblock style %}
+
+{% block main %}
+<a class="link" href="/">К форме выдачи товара</a>
+
+<div class="table-container">
+    <div class="table-row table-header">
+        <div class="table-cell">ID</div>
+        <div class="table-cell">Наименование товара</div>
+        <div class="table-cell">Цвет товара</div>
+        <div class="table-cell">Единица измерения</div>
+        <div class="table-cell">Кол-во</div>
+        <div class="table-cell">Примечание</div>
+        <div class="table-cell">Дата и время выдачи</div>
+    </div>
+    {% for product in products %}
+    <div class="table-row table-row">
+        <div class="table-cell">{{ product.id }}</div>
+        <div class="table-cell">{{ product.name }}</div>
+        <div class="table-cell">{{ product.color }}</div>
+        <div class="table-cell">{{ product.unit_type }}</div>
+        <div class="table-cell">{{ product.quantity }}</div>
+        <div class="table-cell">{{ product.note }}</div>
+        <div class="table-cell">{{ product.date_time_given }}</div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock main %}
