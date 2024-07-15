@@ -64,5 +64,34 @@ def add_product():
         return render_template('add_product.html', error=str(e))
 
 
+@app.route('/delete_product/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    db = get_db()
+    db.delete_product(product_id)
+    return redirect(url_for('list_of_given_products'))
+
+
+@app.route('/update_product/<int:product_id>', methods=['POST'])
+def update_product(product_id):
+    name = request.form.get('productName'),
+    color = request.form.get('productColor'),
+    quantity = request.form.get('productQuantity'),
+    unit_type = request.form.get('productUnit'),
+    note = request.form.get('productNote')
+    db = get_db()
+    try:
+        db.update_product(
+            id=product_id,
+            name=name,
+            color=color,
+            quantity=quantity,
+            unit_type=unit_type,
+            note=note
+        )
+        return redirect(url_for('list_of_given_products'))
+    except Exception as e:
+        return render_template('update_product.html', error=str(e), product_id=product_id)
+    
+    
 if __name__ == '__main__':
     app.run(debug=True)
