@@ -1,21 +1,10 @@
 import datetime
-from db import DBInventory
+from db.db import get_db
 
 from flask import Flask, render_template, g, redirect, url_for, request
 
 app = Flask(__name__, static_folder='./static', template_folder='./templates')
 
-
-def get_db():
-    if 'db' not in g:
-        g.db = DBInventory()
-    return g.db
-
-@app.teardown_appcontext
-def close_db(error):
-    db = g.pop('db', None)
-    if db is not None:
-        db.conn.close()
 
 
 @app.route('/')

@@ -1,40 +1,34 @@
 import sqlite3
+import click
 
-def create_db():
-    with sqlite3.connect('inventory.db') as conn:
-        cursor = conn.cursor()
-        cursor.execute(
-            '''
-            CREATE TABLE IF NOT EXISTS products_to_give (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                color VARCHAR(10) NULL DEFAULT NULL,
-                quantity REAL NOT NULL,
-                unit_type VARCHAR(5) NOT NULL,
-                date_time_given VARCHAR(25),
-                note TEXT NULL DEFAULT NULL
-            )
-            '''
-        )
-        # cursor.execute(
-        #     '''
-        #     CREATE TABLE IF NOT EXISTS products_arrival (
-        #         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        #         name TEXT NOT NULL,
-        #         color VARCHAR(10) NULL DEFAULT NULL,
-        #         quantity REAL NOT NULL,
-        #         unit_type VARCHAR(5) NOT NULL,
-        #         recording_time VARCHAR(25),
-        #         note TEXT NULL DEFAULT NULL,
-        #         article_number INTEGER NULL DEFAULT NULL,
-        #         weight REAL NULL DEFAULT NULL,
-        #         composition TEXT NULL DEFAULT NULL,
-        #         where_from TEXT NULL DEFAULT NULL
-        #         product_code INTEGER NULL DEFAULT NULL
-        #     )
-        #     '''
-        # )  # TODO: Uncomment this block if you want to create a products_arrival table.
-        conn.commit()
+from flask import current_app, g
+
+
+def get_db():
+    if 'db' not in g:
+        g.db = DBInventory()
+        g.db.row_factory = sqlite3.Row
+
+    return g.db
+
+def close_db(e=None):
+    db = g.pop('db', None)
+
+    if db is not None:
+        db.close()
+
+
+def init_db():
+    db = get_db()
+
+    with current_app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
+
+@click.command('init-db')
+def init_db_command():
+    init_db()
+    click.echo('Initialized database.')
 
 
 class DBInventory:
@@ -71,8 +65,6 @@ class DBInventory:
 
 
 # if __name__ == '__main__':
-    create_db()
-    # print('Database created successfully.')
     # db = DBInventory()
     # db.add_product('Product 1', 'Red', 10, 'm', '2024-07-10')
     # db.update_product(id=1, color='Blue', quantity=20, unit_type='kg', date_time_given='2024-07-10')
