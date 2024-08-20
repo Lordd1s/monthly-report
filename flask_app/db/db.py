@@ -36,30 +36,56 @@ class DBInventory:
         self.conn = sqlite3.connect('inventory.db')
         self.cursor = self.conn.cursor()
 
-    def get_products(self, params=None):
-        # params = 'products_to_give' if params is None else 'products_arrival'  # If 'products_arrival' has to be implemented
-        self.cursor.execute('SELECT * FROM products_to_give')
+    # PRODUCTS TO GIVE TABLE
+    def get_given_products(self):
+        self.cursor.execute('SELECT * FROM products_to_give ORDER BY date_time_given DESC;')
         rows = self.cursor.fetchall()
         return rows
     
-    def add_product(self, **kwargs):
-        kwargs = {k: v[0] if isinstance(v, tuple) else v for k, v in kwargs.items()}   
-        columns = ', '.join(kwargs.keys())
-        placeholders = ', '.join(['?'] * len(kwargs))
-        values = list(kwargs.values())
-        query = f'INSERT INTO products_to_give ({columns}) VALUES ({placeholders})'
-        self.cursor.execute(query, values)
-        self.conn.commit()
+    def add_product_to_give(self, **kwargs):
+        try:
+            kwargs = {k: v[0] if isinstance(v, tuple) else v for k, v in kwargs.items()}   
+            columns = ', '.join(kwargs.keys())
+            placeholders = ', '.join(['?'] * len(kwargs))
+            values = list(kwargs.values())
+            query = f'INSERT INTO products_to_give ({columns}) VALUES ({placeholders})'
+            self.cursor.execute(query, values)
+            self.conn.commit()
+        except Exception as e:
+            print(f'Error adding product: {e}')
+    #################################################################################################
+    
+    # PRODUCTS TABLE
+    def get_all_products(self):
+        self.cursor.execute('SELECT * FROM products ORDER BY contract_number ASC;')
+        rows = self.cursor.fetchall()
+        return rows
+    
+    def add_products(self, **kwargs):
+        try:
+            kwargs = {k: v[0] if isinstance(v, tuple) else v for k, v in kwargs.items()}   
+            columns = ', '.join(kwargs.keys())
+            placeholders = ', '.join(['?'] * len(kwargs))
+            values = list(kwargs.values())
+            query = f'INSERT INTO products ({columns}) VALUES ({placeholders})'
+            self.cursor.execute(query, values)
+            self.conn.commit()
+        except Exception as e:
+            print(f'Error adding product: {e}')
 
     def update_product(self, **kwargs):
-        columns = ', '.join([f"{key}=?" for key in kwargs if key != 'id'])
-        values = [kwargs[key] for key in kwargs if key != 'id']
-        values.append(kwargs['id'])
-        sql = f"UPDATE products_to_give SET {columns} WHERE id=?"
-        self.cursor.execute(sql, values)
-        self.conn.commit()
+        try:
+            columns = ', '.join([f"{key}=?" for key in kwargs if key != 'id'])
+            values = [kwargs[key] for key in kwargs if key != 'id']
+            values.append(kwargs['id'])
+            sql = f"UPDATE products SET {columns} WHERE id=?"
+            self.cursor.execute(sql, values)
+            self.conn.commit()
+        except Exception as e:
+            print(f'Error updating product: {e}')
         
     def delete_product(self, id):
+        # DANGER METHOD: Products shouldn't be deleted directly from the database! 
         self.cursor.execute('DELETE FROM products_to_give WHERE id=?', (id,))
         self.conn.commit()
 

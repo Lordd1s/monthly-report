@@ -1,10 +1,17 @@
 import datetime
 from db.db import get_db
+from db.db import init_db_command, close_db
 
 from flask import Flask, render_template, g, redirect, url_for, request
 
 app = Flask(__name__, static_folder='./static', template_folder='./templates')
 
+
+def init_app(app):
+    app.teardown_appcontext(close_db)
+    app.cli.add_command(init_db_command)
+
+init_app(app)
 
 
 @app.route('/')
