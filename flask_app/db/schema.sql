@@ -22,10 +22,12 @@ CREATE TABLE IF NOT EXISTS products (
 
 #  Products sizes (S, XL, etc...)
 PRAGMA foreign_keys = ON;
-CREATE TABLE IF NOT EXISTS size (
+CREATE TABLE IF NOT EXISTS clothes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL
-    FOREIGN KEY (product_id) REFERENCES products(id),
+    contract_number INTEGER NOT NULL
+    FOREIGN KEY (contract_number) REFERENCES products(id),
+    clothes_name TEXT NOT NULL,
+    color VARCHAR(10) NULL DEFAULT NULL,
     size_name TEXT NOT NULL,
     size_number INTEGER NULL DEFAULT NULL
 )
