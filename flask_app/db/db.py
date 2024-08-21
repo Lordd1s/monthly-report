@@ -38,7 +38,14 @@ class DBInventory:
 
     # PRODUCTS TO GIVE TABLE
     def get_given_products(self):
-        self.cursor.execute('SELECT * FROM products_to_give ORDER BY date_time_given DESC;')
+        self.cursor.execute(
+            """
+            SELECT 
+            name, color, quantity, unit_type, date_time_given, note 
+            FROM products_to_give 
+            ORDER BY date_time_given DESC;
+            """
+            )
         rows = self.cursor.fetchall()
         return rows
     
@@ -60,6 +67,16 @@ class DBInventory:
         self.cursor.execute('SELECT * FROM products ORDER BY contract_number ASC;')
         rows = self.cursor.fetchall()
         return rows
+    
+    def get_product_id(self, name):
+        self.cursor.execute(f'SELECT id FROM products WHERE name={name}')
+        field = self.cursor.fetchone()
+        return field if field else None
+    
+    def get_product_names(self):
+        self.cursor.execute('SELECT name FROM products')
+        rows = self.cursor.fetchall()
+        return [row[0] for row in rows]
     
     def add_products(self, **kwargs):
         try:
@@ -86,7 +103,7 @@ class DBInventory:
         
     def delete_product(self, id):
         # DANGER METHOD: Products shouldn't be deleted directly from the database! 
-        self.cursor.execute('DELETE FROM products_to_give WHERE id=?', (id,))
+        self.cursor.execute('DELETE FROM products WHERE id=?', (id,))
         self.conn.commit()
 
 
