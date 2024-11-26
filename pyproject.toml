@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "monthly report"
 version = "0.1.0"
-description = "This project will be send report every month! Sends remaining products"
+description = "This project will be prepares xlsx report every month!"
 authors = ["Lordd1s <uaudias@gmail.com>"]
 readme = "README.md"
 
@@ -13,6 +13,8 @@ Jinja2 = "^3.1.4"
 psycopg2-binary = "^2.9.10"
 alembic = "^1.14.0"
 marshmallow = "^3.23.1"
+flask-sqlalchemy = "^3.1.1"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.0"
